@@ -10,3 +10,5 @@ In this repository we recreate a calculus retention study. This includes data cl
   * This features the long data cleaning process and tables S1, S5, S6, S7, and S8. The tables were modified visually from the paper useing kablextra and are arguably more clear and easy to read. The code used for the data cleaning, specifically coding the switcher/persistor variable, is inefficient. My professor offered suggestions on how to make the code more efficient, and these suggestions are implemented in the next file.  
 3. Calc Model and Results
   * This includes the model from the study and tables featuring the results. More efficient code is used to create the switcher/persistor variable. 
+
+**Additional Files:** CalcData.csv is the data used in this project, and 
