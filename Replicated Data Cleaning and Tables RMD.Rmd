@@ -1,0 +1,364 @@
+---
+title: "STAT 472 HW 2"
+author: "Wulf Novak"
+date: "February 7, 2019"
+output: pdf_document
+---
+
+
+```{r data-prep}
+setwd('C:/Data')
+dataSet <- read.csv('CalcData.csv')
+# dataSet=read.csv("C:/Users/st472/Downloads/CSPCC_Switcher_Data.csv")
+```
+
+
+```{r create-columns}
+## Creating the switch or persist column & adding it to the df
+switchPersist <- rep(NA,length(dataSet[,1]))
+dataSet <- cbind(dataSet,switchPersist)
+
+## Creating the career choice grouping and adding it to the df
+career <- rep(NA,length(dataSet[,1]))
+dataSet <- cbind(dataSet,career)
+
+## Creating the switch or instruction column & adding it to the df
+instruct <- rep(NA,length(dataSet[,1]))
+dataSet <- cbind(dataSet,instruct)
+```
+
+# S1 
+
+```{r SWITCHERS}
+
+
+## Based on S1 table, the conditions for groups 1-11
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q3FUS_No == "No" & dataSet$Q3FUS_Yes == " "] = 1
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q3FUS_No == "No" & dataSet$Q3FUS_Yes == " "] = 2
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 1 & dataSet$Q3FUS_No == "No" & dataSet$Q3FUS_Yes == " "] = 3
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 3 & dataSet$Q3FUS_No == "No" & dataSet$Q3FUS_Yes == " "] = 4
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q5Post == 1 & dataSet$Q3Post == 3 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 5
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q3Post == 2 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 6
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q5Post == 1 & dataSet$Q3Post == 3 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 7
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q3Post == 2 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 8
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 1 & dataSet$Q3Post == 3 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 9
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 1 & dataSet$Q3Post == 2 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 10
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 3 & dataSet$Q3Post == 2 & dataSet$Q3FUS_No == " " & dataSet$Q3FUS_Yes == " "] = 11
+
+# subsetting the groups into their own df:
+group1 <- subset(dataSet, switchPersist == 1)
+group2 <- subset(dataSet, switchPersist == 2)
+group3 <- subset(dataSet, switchPersist == 3)
+group4 <- subset(dataSet, switchPersist == 4)
+group5 <- subset(dataSet, switchPersist == 5)
+group6 <- subset(dataSet, switchPersist == 6)
+group7 <- subset(dataSet, switchPersist == 7)
+group8 <- subset(dataSet, switchPersist == 8)
+group9 <- subset(dataSet, switchPersist == 9)
+group10 <- subset(dataSet, switchPersist == 10)
+group11 <- subset(dataSet, switchPersist == 11)
+
+```
+
+```{r PERSISTERS}
+
+## Based on S1 table, the conditions for groups 12-21
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q3FUS_Yes == "Yes" & dataSet$Q3FUS_No == " "] = 12
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q3FUS_Yes == "Yes" & dataSet$Q3FUS_No == " "] = 13
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 1 & dataSet$Q3FUS_Yes == "Yes" & dataSet$Q3FUS_No == " "] = 14
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 3 & dataSet$Q3FUS_Yes == "Yes" & dataSet$Q3FUS_No == " "] = 15
+dataSet$switchPersist[dataSet$Q26 == 1  & dataSet$Q3Post == 1 & dataSet$Q3FUS_Yes == " " & dataSet$Q3FUS_No == " "] = 16
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q5Post == 3 & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " "
+                      & dataSet$Q3FUS_No == " "] = 17
+dataSet$switchPersist[dataSet$Q26 == 1 & dataSet$Q5Post == 2 & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " " 
+                      & dataSet$Q3FUS_No == " "] = 18
+dataSet$switchPersist[dataSet$Q26 == 1 & is.na(dataSet$Q5Post) & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " " 
+                      & dataSet$Q3FUS_No == " "] = 19
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q3Post == 1 & dataSet$Q3FUS_Yes == " " & dataSet$Q3FUS_No == " "] = 20
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q5Post == 3 & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " " 
+                      & dataSet$Q3FUS_No == " "] = 21
+
+#M in group 22 hence the two statements here..
+dataSet$switchPersist[dataSet$Q26 == 3 & dataSet$Q5Post == 2 & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " "
+                      & dataSet$Q3FUS_No == " "] = 22
+
+## groups 23-26
+dataSet$switchPersist[dataSet$Q26 == 3 & is.na(dataSet$Q5Post) & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " " 
+                      & dataSet$Q3FUS_No == " "] = 23
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 1 & dataSet$Q3Post == 1 & dataSet$Q3FUS_Yes == " " 
+                      & dataSet$Q3FUS_No == " "] = 24
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 3 & dataSet$Q3Post == 1 & dataSet$Q3FUS_Yes == " "
+                      & dataSet$Q3FUS_No == " "] = 25
+dataSet$switchPersist[is.na(dataSet$Q26) & dataSet$Q5Post == 3 & dataSet$Q3Post == 3 & dataSet$Q3FUS_Yes == " "
+                      & dataSet$Q3FUS_No == " "] = 26
+
+
+# Subsetting groups again..
+group12 <- subset(dataSet, switchPersist == 12)
+group13 <- subset(dataSet, switchPersist == 13)
+group14 <- subset(dataSet, switchPersist == 14)
+group15 <- subset(dataSet, switchPersist == 15)
+group16 <- subset(dataSet, switchPersist == 16)
+group17 <- subset(dataSet, switchPersist == 17)
+group18 <- subset(dataSet, switchPersist == 18)
+group19 <- subset(dataSet, switchPersist == 19)
+group20 <- subset(dataSet, switchPersist == 20)
+group21 <- subset(dataSet, switchPersist == 21)
+group22 <- subset(dataSet, switchPersist == 22)
+group23 <- subset(dataSet, switchPersist == 23)
+group24 <- subset(dataSet, switchPersist == 24)
+group25 <- subset(dataSet, switchPersist == 25)
+group26 <- subset(dataSet, switchPersist == 26)
+```
+
+
+## Career choice assignment
+
+```{r career}
+STEM <- c(3,4,5,7,8,9)
+ENG <- 6
+PREMED <- c(1,2)
+NONSTEM <- c(10:15)
+UNDECIDED <- 16
+
+dataSet$career[dataSet$Q60 == STEM] = 1
+dataSet$career[dataSet$Q60 == ENG] = 2
+dataSet$career[dataSet$Q60 == PREMED] = 3
+dataSet$career[dataSet$Q60 == NONSTEM] = 4
+dataSet$career[dataSet$Q60 == UNDECIDED] = 5
+```
+
+## Instructor rating
+```{r intruct}
+
+# not complete
+
+```
+
+```{r S5}
+dt <- dtnew
+
+# creating an indicator variable for switch persist where 1 == switc, 0 == persist
+SWP <- rep(NA,nrow(dt))
+dt <- cbind(dt,SWP)
+
+for(i in seq(1,11,1)){
+dt$SWP[dt$switchPersist == i] = 1
+}
+
+for(i in seq(12,26,1)){
+dt$SWP[dt$switchPersist == i] = 0
+}
+
+p1 <- count(STEM$Q48 == 1 & STEM$SWP == 1)[2,2]/count(STEM$Q48 == 1)[2,2]
+p2 <- count(STEM$Q48 == 2 & STEM$SWP == 1)[2,2]/count(STEM$Q48 == 2)[2,2]
+p3 <- count(ENGINEERING$Q48 == 1 & ENGINEERING$SWP == 1)[2,2]/count(ENGINEERING$Q48 == 1)[2,2]
+p4 <- count(ENGINEERING$Q48 == 2 & ENGINEERING$SWP == 1)[2,2]/count(ENGINEERING$Q48 == 2)[2,2]
+p5 <- count(PRE_MED$Q48 == 1 & PRE_MED$SWP == 1)[2,2]/count(PRE_MED$Q48 == 1)[2,2]
+p6 <- count(PRE_MED$Q48 == 2 & PRE_MED$SWP == 1)[2,2]/count(PRE_MED$Q48 == 2)[2,2]
+p7 <- count(NON_STEM$Q48 == 1 & NON_STEM$SWP == 1)[2,2]/count(NON_STEM$Q48 == 1)[2,2]
+p8 <- count(NON_STEM$Q48 == 2 & NON_STEM$SWP == 1)[2,2]/count(NON_STEM$Q48 == 2)[2,2]
+p9 <- count(UNDECIDED$Q48 == 1 & UNDECIDED$SWP == 1)[2,2]/count(UNDECIDED$Q48 == 1)[2,2]
+p10 <- count(UNDECIDED$Q48 == 2 & UNDECIDED$SWP == 1)[2,2]/count(UNDECIDED$Q48 == 2)[2,2]
+
+# Subsetting by career choices
+STEM <- subset(dt, career == 1)
+ENGINEERING <- subset(dt, career == 2)
+PRE_MED <- subset(dt, career == 3)
+NON_STEM <- subset(dt, career == 4)
+UNDECIDED <- subset(dt, career == 5)
+
+# Creating columns
+S5col1 <- c("STEM", " " , "ENGINEERING" , " " , "PRE-MED" , " " , "NON-STEM" , " " , "UNDECIDED" , " ")
+S5col2 <- c("Male" , "Female" , "Male" , "Female" , "Male" , "Female" ,"Male" , "Female" ,"Male" , "Female")
+S5col3 <- c( count(STEM$Q48 ==2)[1,2],count(STEM$Q48 ==2)[2,2] , count(ENGINEERING$Q48 ==2)[1,2],count(ENGINEERING$Q48 ==2)[2,2] , count(PRE_MED$Q48 ==2)[1,2],count(PRE_MED$Q48 ==2)[2,2] , count(NON_STEM$Q48 ==2)[1,2],count(NON_STEM$Q48 ==2)[2,2] , count(UNDECIDED$Q48 ==2)[1,2],count(UNDECIDED$Q48 ==2)[2,2])
+S5col4 <- round(c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10),digits = 3)*100
+
+S5 <- data.frame(cbind(S5col1,S5col2,S5col3,S5col4)) # add first row names
+```
+
+
+# S6
+
+```{r S6}
+## NOT RIGHT, JUST CODE FOR THE TABLE ##
+
+S6col2 <- c("Male","Female","Male","Female","Male","Female")
+S6col1 <- c("High School" , " " , "College" , " " , "None" , " ")
+
+S6col3 <- c( count(dt$Q48 == 1 & dt$prevCalc == 1)[2,2] , count(dt$Q48 == 2 & dt$prevCalc == 1)[2,2] , count(dt$Q48 == 1 & dt$prevCalc == 2)[2,2]  ,  count(dt$Q48 == 2 & dt$prevCalc == 2)[2,2] , count(dt$Q48 == 1 & dt$prevCalc == 0)[2,2] , count(dt$Q48 == 2 & dt$prevCalc == 0)[2,2])
+
+p1_6 <- count(dt$Q48 == 1 & dt$prevCalc == 1 & dt$SWP == 1)[2,2]/count(dt$Q48 == 1)[2,2]
+p2_6 <- count(dt$Q48 == 2 & dt$prevCalc == 1 & dt$SWP == 1)[2,2]/count(dt$Q48 == 2)[2,2]
+p3_6 <- count(dt$Q48 == 1 & dt$prevCalc == 2 & dt$SWP == 1)[2,2]/count(dt$Q48 == 1)[2,2]
+p4_6 <- count(dt$Q48 == 2 & dt$prevCalc == 2 & dt$SWP == 1)[2,2]/count(dt$Q48 == 2)[2,2]
+p5_6 <- count(dt$Q48 == 1 & dt$prevCalc == 0 & dt$SWP == 1)[2,2]/count(dt$Q48 == 1)[2,2]
+p6_6 <- count(dt$Q48 == 2 & dt$prevCalc == 0 & dt$SWP == 1)[2,2]/count(dt$Q48 == 2)[2,2]
+S6col4 <- c(p1_6,p2_6,p3_6,p4_6,p5_6,p6_6)
+
+S6 <- data.frame(cbind(S6col1,S6col2,S6col3,S6col4))
+```
+# S7
+
+```{r 2266 and S7}
+# Excludes 'NA's in our switchpersist column
+switch <- subset(dataSet, switchPersist != 'NA')
+
+# Only includes data which was used in the study  (Q3_SATMath, Q7_ACTMath, Q15_CalculusNonAPFinalGrade, Q17 Questions, Q18, Q48, Q60, Q18 Survey questions, Q19 survey questions)
+datanew <- switch[complete.cases((switch$Q3_SATMath | switch$Q7_ACTMath) & (switch$Q15_CalculusNonAPFinalGrade | switch$Q17_CalculusABFinalGrade | switch$Q17_CalculusBCFinalGrade | switch$Q18) & switch$Q48 & switch$Q60 & (switch$Q18Post_AskedQs | switch$Q18Post_Listened | switch$Q18Post_Applications | switch$Q18Post_Appointments) &(switch$Q19Post_AskQuestions | switch$Q19Post_SpecificProblems | switch$Q19Post_WorkTogether | switch$Q19Post_Discussion | switch$Q19Post_Presentations | switch$Q19Post_Individually | switch$Q19Post_Lecture | switch$Q19Post_ExplainThinking)),]
+
+# Adjusting SAT and ACT Columns to only have correct values
+dtnew <- datanew[which((datanew$Q3_SATMath%%10 == 0 & datanew$Q3_SATMath <= 800 & datanew$Q3_SATMath >= 200 ) | 
+                      (datanew$Q7_ACTMath <= 36 & datanew$Q7_ACTMath >= 1)),]
+#############################################################
+################ dtnew has 2,266 observations ###############
+#############################################################
+ # dtnew=dataSet is unnecessary here
+dtnew$PSAT[dtnew$Q3_SATMath > 800] = NA
+dtnew$PSAT[dtnew$Q3_SATMath <= 800]= 99
+dtnew$PSAT[dtnew$Q3_SATMath <= 770]= 98
+dtnew$PSAT[dtnew$Q3_SATMath <= 760]= 97
+dtnew$PSAT[dtnew$Q3_SATMath <= 740]= 96
+dtnew$PSAT[dtnew$Q3_SATMath <= 730]= 95
+dtnew$PSAT[dtnew$Q3_SATMath <= 710]= 94
+dtnew$PSAT[dtnew$Q3_SATMath <= 700]= 93
+dtnew$PSAT[dtnew$Q3_SATMath <= 690]= 91
+dtnew$PSAT[dtnew$Q3_SATMath <= 680]= 90
+dtnew$PSAT[dtnew$Q3_SATMath <= 670]= 88
+dtnew$PSAT[dtnew$Q3_SATMath <= 660]= 87
+dtnew$PSAT[dtnew$Q3_SATMath <= 650]= 85
+dtnew$PSAT[dtnew$Q3_SATMath <= 640]= 83
+dtnew$PSAT[dtnew$Q3_SATMath <= 630]= 82
+dtnew$PSAT[dtnew$Q3_SATMath <= 620]= 79
+dtnew$PSAT[dtnew$Q3_SATMath <= 610]= 77
+dtnew$PSAT[dtnew$Q3_SATMath <= 600]= 75
+dtnew$PSAT[dtnew$Q3_SATMath <= 590]= 73
+dtnew$PSAT[dtnew$Q3_SATMath <= 580]= 70
+dtnew$PSAT[dtnew$Q3_SATMath <= 570]= 67
+dtnew$PSAT[dtnew$Q3_SATMath <= 560]= 64
+dtnew$PSAT[dtnew$Q3_SATMath <= 550]= 62
+dtnew$PSAT[dtnew$Q3_SATMath <= 540]= 59
+dtnew$PSAT[dtnew$Q3_SATMath <= 530]= 55
+dtnew$PSAT[dtnew$Q3_SATMath <= 520]= 52
+dtnew$PSAT[dtnew$Q3_SATMath <= 510]= 49
+dtnew$PSAT[dtnew$Q3_SATMath <= 500]= 45
+dtnew$PSAT[dtnew$Q3_SATMath <= 490]= 42
+dtnew$PSAT[dtnew$Q3_SATMath <= 480]= 40
+dtnew$PSAT[dtnew$Q3_SATMath <= 470]= 36
+dtnew$PSAT[dtnew$Q3_SATMath <= 460]= 33
+dtnew$PSAT[dtnew$Q3_SATMath <= 450]= 30
+dtnew$PSAT[dtnew$Q3_SATMath <= 440]= 27
+dtnew$PSAT[dtnew$Q3_SATMath <= 430]= 24
+dtnew$PSAT[dtnew$Q3_SATMath <= 420]= 21
+dtnew$PSAT[dtnew$Q3_SATMath <= 410]= 19
+dtnew$PSAT[dtnew$Q3_SATMath <= 400]= 16
+dtnew$PSAT[dtnew$Q3_SATMath <= 390]= 14
+dtnew$PSAT[dtnew$Q3_SATMath <= 380]= 12
+dtnew$PSAT[dtnew$Q3_SATMath <= 370]= 10
+dtnew$PSAT[dtnew$Q3_SATMath <= 360]= 9
+dtnew$PSAT[dtnew$Q3_SATMath <= 350]= 7
+dtnew$PSAT[dtnew$Q3_SATMath <= 340]= 6
+dtnew$PSAT[dtnew$Q3_SATMath <= 330]= 5
+dtnew$PSAT[dtnew$Q3_SATMath <= 320]= 4
+dtnew$PSAT[dtnew$Q3_SATMath <= 310]= 3
+dtnew$PSAT[dtnew$Q3_SATMath <= 290]= 2
+dtnew$PSAT[dtnew$Q3_SATMath <= 270]= 1
+dtnew$PSAT[dtnew$Q3_SATMath <= 220]= 0
+dtnew$PSAT[dtnew$Q3_SATMath > 800] = NA
+dtnew$PSAT[dtnew$Q3_SATMath < 200] = NA
+dtnew$PSAT[dtnew$Q3_SATMath %% 10 != 0] = NA
+
+
+dtnew$PACT[dtnew$Q7_ACTMath == 1] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 2] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 3] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 4] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 5] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 6] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 7] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 8] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 9] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 10] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 11] = 1
+dtnew$PACT[dtnew$Q7_ACTMath == 12] = 4
+dtnew$PACT[dtnew$Q7_ACTMath == 13] = 7
+dtnew$PACT[dtnew$Q7_ACTMath == 14] = 12
+dtnew$PACT[dtnew$Q7_ACTMath == 15] = 18
+dtnew$PACT[dtnew$Q7_ACTMath == 16] = 24
+dtnew$PACT[dtnew$Q7_ACTMath == 17] = 30
+dtnew$PACT[dtnew$Q7_ACTMath == 18] = 36
+dtnew$PACT[dtnew$Q7_ACTMath == 19] = 43
+dtnew$PACT[dtnew$Q7_ACTMath == 20] = 50
+dtnew$PACT[dtnew$Q7_ACTMath == 21] = 56
+dtnew$PACT[dtnew$Q7_ACTMath == 22] = 62
+dtnew$PACT[dtnew$Q7_ACTMath == 23] = 68
+dtnew$PACT[dtnew$Q7_ACTMath == 24] = 74
+dtnew$PACT[dtnew$Q7_ACTMath == 25] = 79
+dtnew$PACT[dtnew$Q7_ACTMath == 26] = 83
+dtnew$PACT[dtnew$Q7_ACTMath == 27] = 87
+dtnew$PACT[dtnew$Q7_ACTMath == 28] = 90
+dtnew$PACT[dtnew$Q7_ACTMath == 29] = 92
+dtnew$PACT[dtnew$Q7_ACTMath == 30] = 95
+dtnew$PACT[dtnew$Q7_ACTMath == 31] = 96
+dtnew$PACT[dtnew$Q7_ACTMath == 32] = 98
+dtnew$PACT[dtnew$Q7_ACTMath == 33] = 99
+dtnew$PACT[dtnew$Q7_ACTMath == 34] = 99
+dtnew$PACT[dtnew$Q7_ACTMath == 35] = 99
+dtnew$PACT[dtnew$Q7_ACTMath == 36] = 99
+dtnew$PACT[dtnew$Q3_ACTMath > 36] = NA
+dtnew$PACT[dtnew$Q3_ACTMath < 1] = NA
+
+
+scores<-cbind(dtnew$PSAT,dtnew$PACT)
+
+dtnew$Percentile=rowMeans (scores, na.rm = T)
+ 
+```
+```{r Kable Tables}
+library(knitr)
+library(kableExtra)
+
+## Table S1 Persisters
+library(plyr)
+obs <- count(dataSet$switchPersist)
+v1s <- 1:11
+v2s <- obs[c(1:11), 2]
+v3s <- c('Yes', 'Maybe', 'NA', 'NA', 'Yes', 'Yes', 'Maybe', 'Maybe', 'NA', 'NA', 'NA')
+v4s <- c(' ', ' ', 'Yes', 'Maybe', 'Yes', ' ', 'Yes', ' ', 'Yes', 'Yes', 'Maybe' )
+v5s <- c(' ', ' ', ' ', ' ', 'Maybe', 'No', 'Maybe', 'No', 'Maybe', 'No', 'No')
+v6s <- c('No', 'No', 'No', 'No', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA')
+
+## Table S1 Persisters
+v1p <- seq(12,26,1)
+v2p <- obs[c(12:26), 2]
+v3p <- c('Yes', 'Maybe', 'NA', 'NA', rep('Yes', 4), rep('Maybe', 4), rep('NA', 3))
+v4p <- c(' ', ' ', 'Yes', 'Maybe', ' ', 'Maybe', 'No', 'NA', ' ', 'Maybe', 'No', 'NA', 'Yes', 'Maybe', 'Maybe')
+v5p <- c(rep(' ', 4), 'Yes', 'Maybe', 'Maybe', 'Maybe', 'Yes', 'Maybe', 'Maybe', 'Maybe', 'Yes', 'Yes', 'Maybe')
+v6p <- c(rep('Yes', 4), rep('NA', 11))
+
+S1s <- data.frame(cbind(v1s,v2s,v3s,v4s,v5s,v6s))
+names(S1s) <- c("Switcher Group", "Number of Students", "Beginning of Term","End of Term; Reflect","End of Term","Follow Up")
+S1p <- data.frame(cbind(v1p,v2p,v3p,v4p,v5p,v6p))
+names(S1p) <- c("Persister Group", "Number of Students", "Beginning of Term","End of Term; Reflect","End of Term","Follow Up")
+```
+\begin{center}
+\textbf{Switcher and Persister Groups (Table S1)}
+\end{center}
+\vspace{-3.0mm}
+```{r Table S1, echo = FALSE, warning= FALSE}
+
+kable(S1s, format = 'latex', align=rep('c', 6), booktabs = T, linesep ="") %>% kable_styling(latex_options = c('striped', 'condensed', 'hold_position', 'bordered'), full_width = F, stripe_color = '#D3D3D3') %>%
+column_spec(2:3, width= '20mm', border_left = T) %>% column_spec(1, width = '14mm') %>% column_spec(4, width = '24mm',border_left = T) %>% column_spec(5:6, width = '12mm',border_left = T) 
+```
+\vspace{-6.5mm}
+```{r, echo = FALSE}
+kable(S1p, format = 'latex', align=rep('c', 6), booktabs = T, linesep ="") %>% kable_styling(latex_options = c('striped', 'condensed', 'hold_position', 'bordered'), full_width = F, stripe_color = '#D3D3D3') %>%
+column_spec(2:3, width= '20mm', border_left = T) %>% column_spec(1, width = '14mm') %>% column_spec(4, width = '24mm',border_left = T) %>% column_spec(5:6, width = '12mm',border_left = T) 
+```
+```{r kable tables for S5 and S6}
+# kable for tables S5 and S6
+kable(S5, format = 'latex', booktabs = T, linesep = "") %>% kable_styling()
+
+```
+
+
