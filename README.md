@@ -5,7 +5,7 @@ In this repository we recreate a calculus retention study. This includes data cl
 
 **File Description:**
 1. *Calc Model and Results*
-  * This includes the model from the study and tables featuring the results. More efficient code is used to create the   
+  * This includes the model from the study and tables featuring the results.   
 2. *Replicated Data Cleaning and Tables*
   * This features the long data cleaning process, which includes aggregating select variables into a switch/persist variable and PCA. Tables S1, S5, S6, S7, and S8 from the original study are created from scratch. The tables were modified visually from the paper useing kablextra and are arguably more clear and easy to read. The code used for the data cleaning, specifically coding the switcher/persistor variable, is inefficient. My professor offered suggestions on how to make the code more efficient, and these suggestions are implemented in the '1. *Calc Model and Results*' file.   
 3. *Original Calc Retention Study*
